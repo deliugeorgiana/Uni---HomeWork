@@ -1,0 +1,6 @@
+This repository contains digital electronics projects and experiments focusing on Arduino microcontrollers, circuit design, and logic implementation.
+
+Contents:
+--Arduino Projects – LED control, sensors, serial communication, PWM applications
+--Circuit Design – logic gates, combinational/sequential circuits, truth table verification
+--Hardware Implementations – breadboard prototypes, component interfacing, timing circuits
