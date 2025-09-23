@@ -1,0 +1,76 @@
+#! /c/Source/iverilog-install/bin/vvp
+:ivl_version "12.0 (devel)" "(s20150603-1539-g2693dd32b)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision + 0;
+:vpi_module "C:\iverilog\lib\ivl\system.vpi";
+:vpi_module "C:\iverilog\lib\ivl\vhdl_sys.vpi";
+:vpi_module "C:\iverilog\lib\ivl\vhdl_textio.vpi";
+:vpi_module "C:\iverilog\lib\ivl\v2005_math.vpi";
+:vpi_module "C:\iverilog\lib\ivl\va_math.vpi";
+S_000002627c81bb30 .scope module, "tb" "tb" 2 22;
+ .timescale 0 0;
+v000002627c8ab8e0_0 .var "CK", 0 0;
+v000002627c8abd90_0 .var "D", 0 0;
+v000002627c8abf70_0 .net8 "Q", 0 0, L_000002627c864320;  1 drivers, strength-aware
+S_000002627c866ad0 .scope module, "b" "bistabil" 2 26, 2 1 0, S_000002627c81bb30;
+ .timescale 0 0;
+    .port_info 0 /OUTPUT 1 "Q";
+    .port_info 1 /INPUT 1 "D";
+    .port_info 2 /INPUT 1 "CK";
+L_000002627c833150 .functor CMOS 1, v000002627c8ab8e0_0, v000002627c8ab8e0_0, v000002627c8ab8e0_0, C4<0>;
+L_000002627c832ff0 .functor CMOS 1, v000002627c8abd90_0, v000002627c8ab8e0_0, L_000002627c833150, C4<0>;
+L_000002627c864160 .functor CMOS 1, L_000002627c863d00, L_000002627c833150, v000002627c8ab8e0_0, C4<0>;
+L_000002627c863d00 .functor CMOS 1, L_000002627c832ff0, L_000002627c832ff0, L_000002627c832ff0, C4<0>;
+L_000002627c864320 .functor CMOS 1, L_000002627c864160, L_000002627c864160, L_000002627c864160, C4<0>;
+v000002627c81b0c0_0 .net "CK", 0 0, v000002627c8ab8e0_0;  1 drivers
+v000002627c832bf0_0 .net8 "CKbar", 0 0, L_000002627c833150;  1 drivers, strength-aware
+v000002627c81bcc0_0 .net "D", 0 0, v000002627c8abd90_0;  1 drivers
+L_000002627c866ee0 .functor BUFT 1, C8<770>, C4<0>, C4<0>, C4<0>;
+v000002627c81bd60_0 .net8 "GND", 0 0, L_000002627c866ee0;  1 drivers, strength-aware
+v000002627c866c60_0 .net8 "Q", 0 0, L_000002627c864320;  alias, 1 drivers, strength-aware
+L_000002627c81b160 .functor BUFT 1, C8<771>, C4<0>, C4<0>, C4<0>;
+v000002627c866d00_0 .net8 "VDD", 0 0, L_000002627c81b160;  1 drivers, strength-aware
+v000002627c866da0_0 .net8 "w0", 0 0, L_000002627c832ff0;  1 drivers, strength-aware
+v000002627c866e40_0 .net8 "w1", 0 0, L_000002627c863d00;  1 drivers, strength-aware
+v000002627c8ab840_0 .net8 "w2", 0 0, L_000002627c864160;  1 drivers, strength-aware
+    .scope S_000002627c81bb30;
+T_0 ;
+    %vpi_call 2 29 "$dumpfile", "ex2.vcd" {0 0 0};
+    %vpi_call 2 30 "$dumpvars", 32'sb00000000000000000000000000000000, S_000002627c81bb30 {0 0 0};
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v000002627c8abd90_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v000002627c8ab8e0_0, 0, 1;
+    %delay 10, 0;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v000002627c8abd90_0, 0, 1;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v000002627c8ab8e0_0, 0, 1;
+    %delay 10, 0;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v000002627c8ab8e0_0, 0, 1;
+    %delay 10, 0;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v000002627c8abd90_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v000002627c8ab8e0_0, 0, 1;
+    %delay 10, 0;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v000002627c8ab8e0_0, 0, 1;
+    %delay 10, 0;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v000002627c8ab8e0_0, 0, 1;
+    %delay 10, 0;
+    %vpi_call 2 40 "$finish" {0 0 0};
+    %end;
+    .thread T_0;
+    .scope S_000002627c81bb30;
+T_1 ;
+    %vpi_call 2 43 "$monitor", "%b, %b, %b", v000002627c8abd90_0, v000002627c8ab8e0_0, v000002627c8abf70_0 {0 0 0};
+    %end;
+    .thread T_1;
+# The file index is used to find the file name in the following table.
+:file_names 3;
+    "N/A";
+    "<interactive>";
+    "ex2.v";

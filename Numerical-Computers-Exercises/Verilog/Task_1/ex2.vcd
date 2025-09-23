@@ -1,0 +1,164 @@
+$date
+	Thu Mar 20 09:18:11 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module st_fa_tb $end
+$var wire 1 ! S $end
+$var wire 1 " Co $end
+$var reg 1 # A $end
+$var reg 1 $ B $end
+$var reg 1 % Ci $end
+$scope module uut $end
+$var wire 1 # A $end
+$var wire 1 $ B $end
+$var wire 1 % Ci $end
+$var wire 1 & w9 $end
+$var wire 1 ' w8 $end
+$var wire 1 ( w7 $end
+$var wire 1 ) w6 $end
+$var wire 1 * w5 $end
+$var wire 1 + w4 $end
+$var wire 1 , w3 $end
+$var wire 1 - w2 $end
+$var wire 1 . w1 $end
+$var wire 1 " S $end
+$var wire 1 ! Co $end
+$scope module n1 $end
+$var wire 1 # A $end
+$var wire 1 $ B $end
+$var wire 1 . S $end
+$upscope $end
+$scope module n10 $end
+$var wire 1 % B $end
+$var wire 1 & S $end
+$var wire 1 + A $end
+$upscope $end
+$scope module n11 $end
+$var wire 1 & B $end
+$var wire 1 ! S $end
+$var wire 1 ' A $end
+$upscope $end
+$scope module n2 $end
+$var wire 1 . A $end
+$var wire 1 # B $end
+$var wire 1 - S $end
+$upscope $end
+$scope module n3 $end
+$var wire 1 . A $end
+$var wire 1 $ B $end
+$var wire 1 , S $end
+$upscope $end
+$scope module n4 $end
+$var wire 1 - A $end
+$var wire 1 , B $end
+$var wire 1 + S $end
+$upscope $end
+$scope module n5 $end
+$var wire 1 + A $end
+$var wire 1 % B $end
+$var wire 1 * S $end
+$upscope $end
+$scope module n6 $end
+$var wire 1 * A $end
+$var wire 1 + B $end
+$var wire 1 ) S $end
+$upscope $end
+$scope module n7 $end
+$var wire 1 * A $end
+$var wire 1 % B $end
+$var wire 1 ( S $end
+$upscope $end
+$scope module n8 $end
+$var wire 1 ) A $end
+$var wire 1 ( B $end
+$var wire 1 " S $end
+$upscope $end
+$scope module n9 $end
+$var wire 1 # A $end
+$var wire 1 $ B $end
+$var wire 1 ' S $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+1.
+1-
+1,
+0+
+1*
+1)
+1(
+1'
+1&
+0%
+0$
+0#
+0"
+0!
+$end
+#10
+1"
+0(
+1%
+#20
+0)
+1"
+1+
+1(
+0,
+0%
+1$
+#30
+0"
+1!
+1)
+0&
+0*
+1(
+1%
+#40
+1"
+0!
+0)
+1&
+1*
+1,
+0-
+0%
+0$
+1#
+#50
+0"
+1!
+1)
+0&
+0*
+1(
+1%
+#60
+0"
+0+
+1)
+1-
+1&
+1*
+0.
+1,
+0'
+0%
+1$
+#70
+1"
+0(
+1%
+#80

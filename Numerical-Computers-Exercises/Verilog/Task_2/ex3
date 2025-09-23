@@ -1,0 +1,74 @@
+#! /c/Source/iverilog-install/bin/vvp
+:ivl_version "12.0 (devel)" "(s20150603-1539-g2693dd32b)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision + 0;
+:vpi_module "C:\iverilog\lib\ivl\system.vpi";
+:vpi_module "C:\iverilog\lib\ivl\vhdl_sys.vpi";
+:vpi_module "C:\iverilog\lib\ivl\vhdl_textio.vpi";
+:vpi_module "C:\iverilog\lib\ivl\v2005_math.vpi";
+:vpi_module "C:\iverilog\lib\ivl\va_math.vpi";
+S_0000015a0cad5ec0 .scope module, "nand_gate" "nand_gate" 2 1;
+ .timescale 0 0;
+    .port_info 0 /OUTPUT 1 "out";
+    .port_info 1 /INPUT 1 "A";
+    .port_info 2 /INPUT 1 "B";
+L_0000015a0caa3030 .functor BUFT 1, C8<770>, C4<0>, C4<0>, C4<0>;
+o0000015a0cad6fa8 .functor BUFZ 1, C4<z>; HiZ drive
+L_0000015a0caa32f0 .functor NMOS 1, L_0000015a0caa3030, o0000015a0cad6fa8, C4<0>, C4<0>;
+o0000015a0cad6fd8 .functor BUFZ 1, C4<z>; HiZ drive
+L_0000015a0cad2b80 .functor NMOS 1, L_0000015a0caa3030, o0000015a0cad6fd8, C4<0>, C4<0>;
+L_0000015a0caa3190 .functor BUFT 1, C8<771>, C4<0>, C4<0>, C4<0>;
+L_0000015a0cad2b10 .functor PMOS 1, L_0000015a0caa3190, o0000015a0cad6fa8, C4<0>, C4<0>;
+L_0000015a0cad2bf0 .functor PMOS 1, L_0000015a0caa3190, o0000015a0cad6fd8, C4<0>, C4<0>;
+v0000015a0ca88920_0 .net "A", 0 0, o0000015a0cad6fa8;  0 drivers
+v0000015a0caa2c30_0 .net "B", 0 0, o0000015a0cad6fd8;  0 drivers
+v0000015a0cad61e0_0 .net8 "gnd", 0 0, L_0000015a0caa3030;  1 drivers, strength-aware
+RS_0000015a0cad7038 .resolv tri, L_0000015a0caa32f0, L_0000015a0cad2b80, L_0000015a0cad2b10, L_0000015a0cad2bf0;
+v0000015a0cad6280_0 .net8 "out", 0 0, RS_0000015a0cad7038;  4 drivers, strength-aware
+v0000015a0ca8b7c0_0 .net8 "pwr", 0 0, L_0000015a0caa3190;  1 drivers, strength-aware
+S_0000015a0cad6050 .scope module, "testbench" "testbench" 2 17;
+ .timescale 0 0;
+L_0000015a0cad2c60 .functor NAND 1, v0000015a0ca8b860_0, v0000015a0ca8b900_0, C4<1>, C4<1>;
+v0000015a0ca8b860_0 .var "A", 0 0;
+v0000015a0ca8b900_0 .var "B", 0 0;
+v0000015a0ca8b9a0_0 .net "out", 0 0, L_0000015a0cad2c60;  1 drivers
+    .scope S_0000015a0cad6050;
+T_0 ;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0000015a0ca8b860_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0000015a0ca8b900_0, 0, 1;
+    %delay 10, 0;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0000015a0ca8b860_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0000015a0ca8b900_0, 0, 1;
+    %delay 10, 0;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0000015a0ca8b860_0, 0, 1;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0000015a0ca8b900_0, 0, 1;
+    %delay 10, 0;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0000015a0ca8b860_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0000015a0ca8b900_0, 0, 1;
+    %delay 10, 0;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0000015a0ca8b860_0, 0, 1;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0000015a0ca8b900_0, 0, 1;
+    %delay 10, 0;
+    %vpi_call 2 30 "$finish" {0 0 0};
+    %end;
+    .thread T_0;
+    .scope S_0000015a0cad6050;
+T_1 ;
+    %vpi_call 2 34 "$monitor", "%b, %b, %b", v0000015a0ca8b860_0, v0000015a0ca8b900_0, v0000015a0ca8b9a0_0 {0 0 0};
+    %end;
+    .thread T_1;
+# The file index is used to find the file name in the following table.
+:file_names 3;
+    "N/A";
+    "<interactive>";
+    "ex3.v";

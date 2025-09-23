@@ -1,0 +1,131 @@
+#! /c/Source/iverilog-install/bin/vvp
+:ivl_version "12.0 (devel)" "(s20150603-1539-g2693dd32b)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision + 0;
+:vpi_module "C:\iverilog\lib\ivl\system.vpi";
+:vpi_module "C:\iverilog\lib\ivl\vhdl_sys.vpi";
+:vpi_module "C:\iverilog\lib\ivl\vhdl_textio.vpi";
+:vpi_module "C:\iverilog\lib\ivl\v2005_math.vpi";
+:vpi_module "C:\iverilog\lib\ivl\va_math.vpi";
+S_00000213455de780 .scope module, "nor_gate" "nor_gate" 2 1;
+ .timescale 0 0;
+    .port_info 0 /OUTPUT 1 "out";
+    .port_info 1 /INPUT 1 "A";
+    .port_info 2 /INPUT 1 "B";
+L_00000213455db660 .functor BUFT 1, C8<771>, C4<0>, C4<0>, C4<0>;
+o000002134566cfd8 .functor BUFZ 1, C4<z>; HiZ drive
+L_00000213455db900 .functor PMOS 1, L_00000213455db660, o000002134566cfd8, C4<0>, C4<0>;
+o000002134566d008 .functor BUFZ 1, C4<z>; HiZ drive
+L_00000213455dba50 .functor PMOS 1, L_00000213455db900, o000002134566d008, C4<0>, C4<0>;
+L_00000213455dbd60 .functor BUFT 1, C8<770>, C4<0>, C4<0>, C4<0>;
+L_00000213455dbac0 .functor NMOS 1, L_00000213455dbd60, o000002134566cfd8, C4<0>, C4<0>;
+L_00000213455dbba0 .functor NMOS 1, L_00000213455dbd60, o000002134566d008, C4<0>, C4<0>;
+v0000021345655860_0 .net "A", 0 0, o000002134566cfd8;  0 drivers
+v00000213455deaa0_0 .net "B", 0 0, o000002134566d008;  0 drivers
+v00000213455deb40_0 .net8 "gnd", 0 0, L_00000213455dbd60;  1 drivers, strength-aware
+RS_000002134566d068 .resolv tri, L_00000213455dba50, L_00000213455dbac0, L_00000213455dbba0;
+v00000213456327f0_0 .net8 "out", 0 0, RS_000002134566d068;  3 drivers, strength-aware
+v00000213456b2660_0 .net8 "out_int", 0 0, L_00000213455db900;  1 drivers, strength-aware
+v00000213456b1bc0_0 .net8 "pwr", 0 0, L_00000213455db660;  1 drivers, strength-aware
+S_00000213455de910 .scope module, "tb" "tb" 2 36;
+ .timescale 0 0;
+v00000213456b1b20_0 .var "i0", 0 0;
+v00000213456b23e0_0 .var "i1", 0 0;
+v00000213456b2480_0 .net "out", 0 0, L_0000021345663ac0;  1 drivers
+v00000213456b1c60_0 .var "s", 0 0;
+S_0000021345632890 .scope module, "m1" "mux_2to1" 2 40, 2 18 0, S_00000213455de910;
+ .timescale 0 0;
+    .port_info 0 /OUTPUT 1 "out";
+    .port_info 1 /INPUT 1 "i0";
+    .port_info 2 /INPUT 1 "i1";
+    .port_info 3 /INPUT 1 "s";
+L_00000213455db740 .functor BUFT 1, C8<770>, C4<0>, C4<0>, C4<0>;
+L_0000021345663a50 .functor NMOS 1, L_00000213455db740, v00000213456b1c60_0, C4<0>, C4<0>;
+L_00000213455dbc10 .functor BUFT 1, C8<771>, C4<0>, C4<0>, C4<0>;
+L_00000213456634a0 .functor PMOS 1, L_00000213455dbc10, v00000213456b1c60_0, C4<0>, C4<0>;
+RS_000002134566d278 .resolv tri, L_0000021345663a50, L_00000213456634a0;
+L_0000021345663eb0 .functor NAND 1, v00000213456b1b20_0, RS_000002134566d278, C4<1>, C4<1>;
+L_00000213456635f0 .functor NAND 1, v00000213456b23e0_0, v00000213456b1c60_0, C4<1>, C4<1>;
+L_0000021345663ac0 .functor NAND 1, L_0000021345663eb0, L_00000213456635f0, C4<1>, C4<1>;
+v00000213456b2520_0 .net8 "gnd", 0 0, L_00000213455db740;  1 drivers, strength-aware
+v00000213456b22a0_0 .net "i0", 0 0, v00000213456b1b20_0;  1 drivers
+v00000213456b1a80_0 .net "i1", 0 0, v00000213456b23e0_0;  1 drivers
+v00000213456b1940_0 .net "out", 0 0, L_0000021345663ac0;  alias, 1 drivers
+v00000213456b2200_0 .net "s", 0 0, v00000213456b1c60_0;  1 drivers
+v00000213456b2340_0 .net8 "sbar", 0 0, RS_000002134566d278;  2 drivers, strength-aware
+v00000213456b2700_0 .net8 "vdd", 0 0, L_00000213455dbc10;  1 drivers, strength-aware
+v00000213456b1e40_0 .net "w0", 0 0, L_0000021345663eb0;  1 drivers
+v00000213456b27a0_0 .net "w1", 0 0, L_00000213456635f0;  1 drivers
+    .scope S_00000213455de910;
+T_0 ;
+    %vpi_call 2 43 "$dumpfile", "ex1.vcd" {0 0 0};
+    %vpi_call 2 44 "$dumpvars", 32'sb00000000000000000000000000000000, S_00000213455de910 {0 0 0};
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v00000213456b1b20_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v00000213456b23e0_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v00000213456b1c60_0, 0, 1;
+    %delay 10, 0;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v00000213456b1b20_0, 0, 1;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v00000213456b23e0_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v00000213456b1c60_0, 0, 1;
+    %delay 10, 0;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v00000213456b1b20_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v00000213456b23e0_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v00000213456b1c60_0, 0, 1;
+    %delay 10, 0;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v00000213456b1b20_0, 0, 1;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v00000213456b23e0_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v00000213456b1c60_0, 0, 1;
+    %delay 10, 0;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v00000213456b1b20_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v00000213456b23e0_0, 0, 1;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v00000213456b1c60_0, 0, 1;
+    %delay 10, 0;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v00000213456b1b20_0, 0, 1;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v00000213456b23e0_0, 0, 1;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v00000213456b1c60_0, 0, 1;
+    %delay 10, 0;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v00000213456b1b20_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v00000213456b23e0_0, 0, 1;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v00000213456b1c60_0, 0, 1;
+    %delay 10, 0;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v00000213456b1b20_0, 0, 1;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v00000213456b23e0_0, 0, 1;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v00000213456b1c60_0, 0, 1;
+    %delay 10, 0;
+    %vpi_call 2 54 "$finish" {0 0 0};
+    %end;
+    .thread T_0;
+    .scope S_00000213455de910;
+T_1 ;
+    %vpi_call 2 57 "$monitor", "%b, %b, %b, %b", v00000213456b1b20_0, v00000213456b23e0_0, v00000213456b1c60_0, v00000213456b2480_0 {0 0 0};
+    %end;
+    .thread T_1;
+# The file index is used to find the file name in the following table.
+:file_names 3;
+    "N/A";
+    "<interactive>";
+    "ex1.v";

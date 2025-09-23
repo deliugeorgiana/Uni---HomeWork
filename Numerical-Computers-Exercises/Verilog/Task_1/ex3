@@ -1,0 +1,65 @@
+#! /c/Source/iverilog-install/bin/vvp
+:ivl_version "12.0 (devel)" "(s20150603-1539-g2693dd32b)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision + 0;
+:vpi_module "C:\iverilog\lib\ivl\system.vpi";
+:vpi_module "C:\iverilog\lib\ivl\vhdl_sys.vpi";
+:vpi_module "C:\iverilog\lib\ivl\vhdl_textio.vpi";
+:vpi_module "C:\iverilog\lib\ivl\v2005_math.vpi";
+:vpi_module "C:\iverilog\lib\ivl\va_math.vpi";
+S_000002949b1b9320 .scope module, "ex3_tb" "ex3_tb" 2 18;
+ .timescale 0 0;
+v000002949b1bb910_0 .var "a", 0 0;
+v000002949b1bb9b0_0 .var "b", 0 0;
+RS_000002949b047098 .resolv tri, L_000002949b08b8a0, L_000002949b08ba60, L_000002949b08b910;
+v000002949b1bba50_0 .net8 "out", 0 0, RS_000002949b047098;  3 drivers, strength-aware
+S_000002949b045df0 .scope module, "uut" "ex3" 2 22, 2 1 0, S_000002949b1b9320;
+ .timescale 0 0;
+    .port_info 0 /OUTPUT 1 "out";
+    .port_info 1 /INPUT 1 "a";
+    .port_info 2 /INPUT 1 "b";
+L_000002949b08bad0 .functor BUFT 1, C8<771>, C4<0>, C4<0>, C4<0>;
+L_000002949b08b8a0 .functor PMOS 1, L_000002949b08bad0, v000002949b1bb910_0, C4<0>, C4<0>;
+L_000002949b08ba60 .functor PMOS 1, L_000002949b08bad0, v000002949b1bb9b0_0, C4<0>, C4<0>;
+L_000002949b08b910 .functor NMOS 1, L_000002949b08bc20, v000002949b1bb910_0, C4<0>, C4<0>;
+L_000002949b046200 .functor BUFT 1, C8<770>, C4<0>, C4<0>, C4<0>;
+L_000002949b08bc20 .functor NMOS 1, L_000002949b046200, v000002949b1bb9b0_0, C4<0>, C4<0>;
+v000002949b045f80_0 .net "a", 0 0, v000002949b1bb910_0;  1 drivers
+v000002949b1b6e80_0 .net "b", 0 0, v000002949b1bb9b0_0;  1 drivers
+v000002949b046020_0 .net8 "c", 0 0, L_000002949b08bc20;  1 drivers, strength-aware
+v000002949b0460c0_0 .net8 "gnd", 0 0, L_000002949b046200;  1 drivers, strength-aware
+v000002949b046160_0 .net8 "out", 0 0, RS_000002949b047098;  alias, 3 drivers, strength-aware
+v000002949b1bb870_0 .net8 "pwr", 0 0, L_000002949b08bad0;  1 drivers, strength-aware
+    .scope S_000002949b1b9320;
+T_0 ;
+    %vpi_call 2 25 "$dumpfile", "ex3.vcd" {0 0 0};
+    %vpi_call 2 26 "$dumpvars", 32'sb00000000000000000000000000000000, S_000002949b1b9320 {0 0 0};
+    %vpi_call 2 28 "$monitor", "Time=%0t a=%b b=%b -> out=%b", $time, v000002949b1bb910_0, v000002949b1bb9b0_0, v000002949b1bba50_0 {0 0 0};
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v000002949b1bb910_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v000002949b1bb9b0_0, 0, 1;
+    %delay 10, 0;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v000002949b1bb910_0, 0, 1;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v000002949b1bb9b0_0, 0, 1;
+    %delay 10, 0;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v000002949b1bb910_0, 0, 1;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v000002949b1bb9b0_0, 0, 1;
+    %delay 10, 0;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v000002949b1bb910_0, 0, 1;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v000002949b1bb9b0_0, 0, 1;
+    %delay 10, 0;
+    %vpi_call 2 34 "$finish" {0 0 0};
+    %end;
+    .thread T_0;
+# The file index is used to find the file name in the following table.
+:file_names 3;
+    "N/A";
+    "<interactive>";
+    "ex3.v";
