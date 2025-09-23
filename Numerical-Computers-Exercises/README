@@ -1,0 +1,5 @@
+This repository contains exercises developed during the Numerical Computers course, focusing on low-level programming and digital design.
+
+Contents:
+- Verilog – digital circuit design (counters, multiplexers, FSMs, etc.)
+- MIPS Assembly – low-level algorithms (arithmetic operations, loops, sorting, etc.)
