@@ -1,0 +1,198 @@
+#1
+#a
+T_masurare = 2  
+T_masurare_secunde = T_masurare * 3600  
+
+fs = 1 / T_masurare_secunde 
+
+print(f"Masuram la fiecare {T_masurare} ore")
+print(f"Perioada de esantionare: {T_masurare_secunde} secunde")
+print(f"Frecventa de esantionare: {fs:.2e} Hz")
+
+#b
+T_semnal = 24 * 3600  
+f_semnal = 1 / T_semnal  
+
+f_nyquist = 2 * f_semnal
+
+T_max_esantionare = 1 / f_nyquist
+T_max_ore = T_max_esantionare / 3600
+
+print(f"Perioada semnalului: {T_semnal} s = 24 ore")
+print(f"Frecventa semnalului: {f_semnal:.2e} Hz")
+print(f"Frecventa Nyquist: {f_nyquist:.2e} Hz")
+print(f"Perioada maxima de esantionare: {T_max_esantionare} s = {T_max_ore} ore")
+print()
+print(f"Esantionarea actuala: la fiecare 2 ore")
+print(f"Esantionarea Nyquist: maxim la fiecare {T_max_ore} ore")
+if T_masurare <= T_max_ore:
+    print("✓ Esantionarea e CORECTA (respecta Nyquist)")
+else:
+    print("✗ Esantionarea NU e corecta (nu respecta Nyquist)")
+
+#c
+
+t_continuu = np.linspace(0, 7*24, 7*24*10) 
+
+temperatura = np.cos(2 * np.pi * t_continuu / 24)  
+
+t_esant = np.arange(0, 7*24, 2) 
+temp_esant = np.cos(2 * np.pi * t_esant / 24)
+
+plt.figure(figsize=(12, 6))
+plt.plot(t_continuu, temperatura, 'b-', label='Temperatura continua')
+plt.plot(t_esant, temp_esant, 'ro', markersize=6, label='Esantioane (2h)')
+plt.xlabel('Timp (ore de la miercuri 12:00)')
+plt.ylabel('Temperatura (°C)')
+plt.title('Temperatura in incinta pentru o saptamana')
+plt.grid()
+plt.legend()
+plt.show()
+
+print("Axa timpului (primele 10 valori):")
+print(t_esant[:10])
+print(f"Total esantioane: {len(t_esant)}")
+
+#d
+def cmmmc(a, b):
+    return abs(a * b) // np.gcd(a, b)
+
+pas = 5  
+perioada = 24  
+cmc = cmmmc(pas, perioada)
+
+print(f"Masuram la fiecare {pas} ore")
+print(f"Perioada semnalului: {perioada} ore")
+print(f"CMMMC({pas}, {perioada}) = {cmc} ore")
+print()
+
+zile = cmc // 24
+ore_ramase = cmc % 24
+
+zile_saptamana = ['miercuri', 'joi', 'vineri', 'sambata', 'duminica', 'luni', 'marti']
+zi_start = 0  
+zi_finala = (zi_start + zile) % 7
+ora_finala = 12 + ore_ramase
+
+if ora_finala >= 24:
+    zi_finala = (zi_finala + 1) % 7
+    ora_finala -= 24
+
+print(f"Prima valoare se repeta dupa {cmc} ore")
+print(f"Adica in ziua de {zile_saptamana[zi_finala]} la ora {ora_finala}:00")
+
+#e
+
+t_esant_5h = np.arange(0, 7*24, 5)  
+temp_esant_5h = np.cos(2 * np.pi * t_esant_5h / 24)
+
+plt.figure(figsize=(12, 6))
+plt.plot(t_esant_5h, temp_esant_5h, 'ro-', markersize=8, linewidth=2)
+plt.xlabel('Timp (ore de la miercuri 12:00)')
+plt.ylabel('Temperatura (°C)')
+plt.title('Esantioane de temperatura la fiecare 5 ore')
+plt.grid()
+plt.show()
+
+print(f"Esantioane la 5h: {len(t_esant_5h)} puncte")
+print("Observatie: Linia uneste punctele si pare sa arate o frecventa mai mica!")
+print("Aceasta e o forma de aliasing - esantionarea e sub-Nyquist")
+
+#f
+plt.figure(figsize=(14, 8))
+
+plt.plot(t_continuu, temperatura, 'b-', linewidth=2, label='Temperatura continua')
+
+plt.stem(t_esant, temp_esant, linefmt='g-', markerfmt='go', 
+         basefmt='g-', label='Esantioane 2h (Nyquist)')
+
+plt.stem(t_esant_5h, temp_esant_5h, linefmt='r-', markerfmt='rs', 
+         basefmt='r-', label='Esantioane 5h (sub-Nyquist)')
+
+plt.xlabel('Timp (ore de la miercuri 12:00)')
+plt.ylabel('Temperatura (°C)')
+plt.title('Comparatie esantionare corecta vs sub-Nyquist')
+plt.grid()
+plt.legend()
+plt.xlim(0, 72)  
+plt.show()
+
+print("Se vede clar diferenta:")
+print("- Esantioanele la 2h (verde) captureaza corect semnalul")
+print("- Esantioanele la 5h (rosu) pierd informatii importante")
+
+
+#2
+A = 2
+offset = 5
+f = 0.5  
+phi = np.pi/4  
+
+t = np.linspace(0, 4, 1000)  
+semnal = A * np.sin(2 * np.pi * f * t + phi) + offset
+
+plt.figure(figsize=(10, 6))
+plt.plot(t, semnal, 'b-', linewidth=2)
+plt.axhline(y=3, color='r', linestyle='--', label='min = 3')
+plt.axhline(y=7, color='r', linestyle='--', label='max = 7')
+plt.xlabel('Timp (s)')
+plt.ylabel('Amplitudine')
+plt.title(f'Sinusoida cu min=3, max=7 (f={f}Hz, phi={phi:.2f})')
+plt.grid()
+plt.legend()
+plt.ylim(2, 8)
+plt.show()
+
+print(f"Amplitudine: {A}")
+print(f"Offset: {offset}")
+print(f"Frecventa: {f} Hz")
+print(f"Faza: {phi:.2f} rad")
+print(f"Min teoretic: {offset - A}")
+print(f"Max teoretic: {offset + A}")
+print(f"Min real: {semnal.min():.3f}")
+print(f"Max real: {semnal.max():.3f}")
+
+
+#3
+B = 10  
+fc = 90  
+
+f_min = fc - B/2  
+f_max = fc + B/2  
+
+print(f"Semnal de banda B = {B} Hz centrat la fc = {fc} Hz")
+print(f"Banda semnalului: [{f_min} Hz, {f_max} Hz]")
+print()
+
+
+m_values = [1, 2, 4]
+
+for m in m_values:
+    fs_opt = 2 * f_max / m
+    print(f"Pentru m = {m}:")
+    print(f"  fs_optim = 2*f_max/m = 2*{f_max}/{m} = {fs_opt} Hz")
+
+    fs_min_banda = 2 * B
+    print(f"  Conditia de banda: fs >= 2*B = {fs_min_banda} Hz")
+    
+    if fs_opt >= fs_min_banda:
+        print(f"  ✓ Conditia e respectata")
+    else:
+        print(f"  ✗ Conditia NU e respectata")
+    print()
+
+#4
+P_semnal_dB = 90  
+SNR_dB = 80       
+
+P_zgomot_dB = P_semnal_dB - SNR_dB
+
+print("Calculul puterii zgomotului:")
+print(f"P_semnal = {P_semnal_dB} dB")
+print(f"SNR = {SNR_dB} dB")
+print()
+print("Formula: SNR_dB = P_semnal_dB - P_zgomot_dB")
+print(f"P_zgomot_dB = P_semnal_dB - SNR_dB")
+print(f"P_zgomot_dB = {P_semnal_dB} - {SNR_dB} = {P_zgomot_dB} dB")
+print()
+print(f"Raspuns: Puterea zgomotului este {P_zgomot_dB} dB")

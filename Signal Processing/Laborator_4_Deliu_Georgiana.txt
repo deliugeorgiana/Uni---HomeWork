@@ -1,0 +1,118 @@
+#1
+DA
+
+#2
+f_min = 40   
+f_max = 200 
+
+fs_min = 2 * f_max
+
+print("Contrabasul emite frecvente intre 40Hz si 200Hz")
+print(f"Frecventa maxima: {f_max} Hz")
+print(f"Frecventa minima de esantionare (Nyquist): {fs_min} Hz")
+print(f"Deci trebuie sa esantionez cu minim {fs_min} Hz")
+
+
+#3
+f_original = 80  
+A = 1
+phi = 0
+t_continuu = np.linspace(0, 0.2, 2000)
+x_original = A * np.sin(2 * np.pi * f_original * t_continuu + phi)
+
+fs = 120  
+t_esant = np.arange(0, 0.2, 1/fs)
+
+x_esant = A * np.sin(2 * np.pi * f_original * t_esant + phi)
+
+f_alias1 = f_original + fs   
+f_alias2 = f_original - fs    
+
+x_alias1 = A * np.sin(2 * np.pi * f_alias1 * t_continuu + phi)
+x_alias2 = A * np.sin(2 * np.pi * abs(f_original - fs) * t_continuu + phi)
+
+
+x_alias1_esant = A * np.sin(2 * np.pi * f_alias1 * t_esant + phi)
+x_alias2_esant = A * np.sin(2 * np.pi * abs(f_original - fs) * t_esant + phi)
+
+plt.figure(figsize=(14, 8))
+
+plt.subplot(3, 1, 1)
+plt.plot(t_continuu, x_original, 'b-', label=f'Original {f_original}Hz')
+plt.stem(t_esant, x_esant, linefmt='bo-', markerfmt='bo', basefmt='b-')
+plt.title('Semnal original si esantioane')
+plt.legend()
+plt.grid()
+
+plt.subplot(3, 1, 2)
+plt.plot(t_continuu, x_alias1, 'r-', label=f'Alias 1: {f_alias1}Hz')
+plt.stem(t_esant, x_alias1_esant, linefmt='ro-', markerfmt='ro', basefmt='r-')
+plt.title('Primul semnal alias')
+plt.legend()
+plt.grid()
+
+plt.subplot(3, 1, 3)
+plt.plot(t_continuu, x_alias2, 'g-', label=f'Alias 2: {abs(f_original-fs)}Hz')
+plt.stem(t_esant, x_alias2_esant, linefmt='go-', markerfmt='go', basefmt='g-')
+plt.title('Al doilea semnal alias')
+plt.legend()
+plt.grid()
+
+plt.tight_layout()
+plt.show()
+
+print(f"Frecventa originala: {f_original} Hz")
+print(f"Frecventa de esantionare: {fs} Hz (sub-Nyquist: {2*f_original} Hz)")
+print(f"Frecventele alias: {f_alias1} Hz si {abs(f_original-fs)} Hz")
+print("Toate 3 semnalele dau aceleasi esantioane!")
+
+
+#4
+f_original = 80  
+f_alias1 = 200     
+f_alias2 = 40   
+
+fs_corect = 450  
+t_esant_corect = np.arange(0, 0.2, 1/fs_corect)
+
+x_orig_corect = A * np.sin(2 * np.pi * f_original * t_esant_corect + phi)
+x_alias1_corect = A * np.sin(2 * np.pi * f_alias1 * t_esant_corect + phi)
+x_alias2_corect = A * np.sin(2 * np.pi * f_alias2 * t_esant_corect + phi)
+
+plt.figure(figsize=(14, 10))
+
+plt.subplot(4, 1, 1)
+plt.plot(t_continuu, x_original, 'b-', label=f'{f_original}Hz')
+plt.plot(t_continuu, x_alias1, 'r-', label=f'{f_alias1}Hz')  
+plt.plot(t_continuu, x_alias2, 'g-', label=f'{f_alias2}Hz')
+plt.title('Semnalele continue')
+plt.legend()
+plt.grid()
+
+plt.subplot(4, 1, 2)
+plt.stem(t_esant, x_esant, linefmt='bo-', markerfmt='bo', label=f'{f_original}Hz')
+plt.stem(t_esant, x_alias1_esant, linefmt='ro-', markerfmt='ro', label=f'{f_alias1}Hz')
+plt.stem(t_esant, x_alias2_esant, linefmt='go-', markerfmt='go', label=f'{f_alias2}Hz')
+plt.title(f'Esantionare sub-Nyquist ({fs}Hz) - CU aliasing')
+plt.legend()
+plt.grid()
+
+plt.subplot(4, 1, 3)
+plt.stem(t_esant_corect, x_orig_corect, linefmt='bo-', markerfmt='bo', label=f'{f_original}Hz')
+plt.title(f'Semnal {f_original}Hz esantionat corect ({fs_corect}Hz)')
+plt.legend()
+plt.grid()
+
+plt.subplot(4, 1, 4)
+plt.stem(t_esant_corect, x_alias1_corect, linefmt='ro-', markerfmt='ro', label=f'{f_alias1}Hz')
+plt.stem(t_esant_corect, x_alias2_corect, linefmt='go-', markerfmt='go', label=f'{f_alias2}Hz')
+plt.title(f'Semnalele {f_alias1}Hz si {f_alias2}Hz esantionate corect')
+plt.legend()
+plt.grid()
+
+plt.tight_layout()
+plt.show()
+
+print(f"Frecventa Nyquist pentru {f_alias1}Hz: {2*f_alias1}Hz")
+print(f"Frecventa de esantionare corecta: {fs_corect}Hz")
+print("Acum semnalele sunt distincte - NU mai e aliasing!")

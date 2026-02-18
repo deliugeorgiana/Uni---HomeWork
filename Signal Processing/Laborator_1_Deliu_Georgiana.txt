@@ -1,0 +1,36 @@
+4.
+import numpy as np
+
+A = np.array([[1, 0, 3],
+              [2, -1, 5],
+              [0, 7, 0]])
+
+v = np.array([-2, 0, 4])
+
+result = A @ v
+
+print(result)
+
+
+5. 
+import numpy as np
+from scipy.integrate import quad
+
+f = lambda x: np.exp(x)
+
+a=-1
+b=1
+
+result, error = quad(f,a,b)
+
+6.
+import numpy as np
+from scipy.integrate import fixed_quad
+
+f = lambda x: np.exp(1j * np.pi * x)
+
+a = 0
+b = 1 
+
+result, _ = fixed_quad(f, a, b, n=10)  
+

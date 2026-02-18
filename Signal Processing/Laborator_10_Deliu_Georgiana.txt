@@ -1,0 +1,133 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import sklearn
+import dictlearn
+from dictlearn import DictionaryLearning
+from dictlearn import methods
+from matplotlib import image
+from sklearn.feature_extraction.image \
+import extract_patches_2d, reconstruct_from_patches_2d
+from sklearn.preprocessing import normalize
+
+p = 8           # dimensiunea unui patch (numar de pixeli)
+s = 6           # sparsitatea
+N = 1000        # numarul total de patch-uri
+n = 256         # numarul de atomi din dictionar
+K = 50          # numarul de iteratii DL
+sigma = 0.075   # deviatia standard a zgomotului
+
+#1
+#a
+I=image.imread('C:/Users/deliu/Desktop/barbara.png')
+if I.dtype != 'float32':
+    I = I / 255.0
+    
+plt.imshow(I,cmap='gray')
+
+#1
+#b
+sigma = 0.21
+Inoisy = I + sigma * np.random.randn(I.shape[0], I.shape[1])
+plt.imshow(Inoisy,cmap='gray')
+
+#1
+#c
+p = 6
+Ynoisy = extract_patches_2d(Inoisy, (p, p))
+print("Dimensiunea initiala:", Ynoisy.shape)
+
+Ynoisy = Ynoisy.reshape(Ynoisy.shape[0], -1)
+print("Dimensiunea dupa vectorizare:", Ynoisy.shape)
+
+Ynoisy = np.transpose(Ynoisy)
+media_semnale = np.mean(Ynoisy, axis=0)
+Ynoisy = Ynoisy - media_semnale
+
+#1
+#d
+N = 1250
+indices = np.random.choice(Ynoisy.shape[1], N, replace=False)
+Y = Ynoisy[:, indices]
+
+#2
+#a
+n = 256
+D0 = np.random.randn(p * p, n)
+D0 = normalize(D0, axis=0, norm='max')
+
+#2
+#b
+dl = DictionaryLearning(
+n_components=n,
+max_iter=K,
+fit_algorithm='ksvd',
+n_nonzero_coefs=s,
+code_init=None,
+dict_init=D0,
+params=None,
+data_sklearn_compat=False
+)
+dl.fit(Y)
+D = dl.D_
+
+#3
+#a
+Xc, err = methods.omp(Ynoisy, D, n_nonzero_coefs=s)
+print(f"Dimensiune Xc: {Xc.shape}")
+print(f"Eroare de reconstructie: {err}")
+
+#3
+#b
+Yc = D @ Xc
+Yc += media_semnale
+print("Yc:", Yc)
+print("Yc shape:", Yc.shape)
+
+#3
+#c
+Yc = np.transpose(Yc)
+Yc = Yc.reshape(-1, p, p)
+
+#3
+#d
+Ic = reconstruct_from_patches_2d(Yc, I.shape)
+plt.imshow(Ic, cmap='gray')
+
+#4
+#a
+plt.figure(figsize=(15, 5))
+plt.subplot(1, 3, 1)
+plt.imshow(I, cmap='gray')
+plt.title("Imagine originala")
+
+plt.subplot(1, 3, 2)
+plt.imshow(Inoisy, cmap='gray')
+plt.title("Imagine zgomot")
+
+plt.subplot(1, 3, 3)
+plt.imshow(Ic, cmap='gray')
+plt.title("Imagine curata")
+plt.show()
+
+#4
+#b
+def psnr(img1, img2):
+    mse = np.mean((img1 - img2) ** 2)
+    if mse == 0:
+        return float('inf')
+    max_pixel = 1.0
+    return 20 * np.log10(max_pixel / np.sqrt(mse))
+
+psnr_noisy = psnr(I, Inoisy)
+psnr_cleaned = psnr(I, Ic)
+print(f"PSNR (noisy vs original): {psnr_noisy:.2f}")
+print(f"PSNR (denoised vs original): {psnr_cleaned:.2f}")
+
+
+#4
+#c
+print(f"PSNR Noisy: {psnr_noisy:.2f}")
+print(f"PSNR Denoised: {psnr_cleaned:.2f}")
+
+if psnr_cleaned > psnr_noisy:
+    print("Metoda a functionar")

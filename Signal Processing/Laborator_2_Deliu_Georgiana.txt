@@ -1,0 +1,220 @@
+#1
+#a
+t = np.arange(0, 0.03 + 0.0005, 0.0005)  
+print(f" {len(t)} esantioane")
+print(f"Primul esantion: {t[0]}, ultimul esantion: {t[-1]}")
+
+#b
+x = np.cos(520 * np.pi * t + np.pi/3)
+y = np.cos(280 * np.pi * t - np.pi/3)
+z = np.cos(120 * np.pi * t + np.pi/3)
+
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(12, 8))
+
+ax1.plot(t, x, 'b-', linewidth=1.5)
+ax1.set_title('Semnalul x(t) ')
+ax1.set_xlabel('Timpul (s)')
+ax1.set_ylabel('Amplitudine')
+ax1.grid(True)
+
+ax2.plot(t, y, 'r-', linewidth=1.5)
+ax2.set_title('Semnalul y(t) ')
+ax2.set_xlabel('Timpul (s)')
+ax2.set_ylabel('Amplitudine')
+ax2.grid(True)
+
+ax3.plot(t, z, 'g-', linewidth=1.5)
+ax3.set_title('Semnalul z(t)')
+ax3.set_xlabel('Timpul (s)')
+ax3.set_ylabel('Amplitudine')
+ax3.grid(True)
+
+plt.tight_layout()
+plt.show()
+
+#c
+fs = 200  
+Ts = 1/fs  
+t_discrete = np.arange(0, 0.03 + Ts, Ts)  
+
+
+x_n = np.cos(520 * np.pi * t_discrete + np.pi/3)
+y_n = np.cos(280 * np.pi * t_discrete - np.pi/3)
+z_n = np.cos(120 * np.pi * t_discrete + np.pi/3)
+
+
+fig, (a, b, c) = plt.subplots(3, 1, figsize=(12, 8))
+a.stem(t_discrete, x_n, basefmt='b-')
+a.set_title('x[n]')
+a.set_xlabel('Timpul ')
+a.set_ylabel('Amplitudine')
+a.grid(True)
+
+b.stem(t_discrete, y_n, basefmt='r-')
+b.set_title(' y[n]')
+b.set_xlabel('Timpul (s)')
+b.set_ylabel('Amplitudine')
+b.grid(True)
+
+c.stem(t_discrete, z_n, basefmt='g-')
+c.set_title(' z[n]')
+c.set_xlabel('Timpul (s)')
+c.set_ylabel('Amplitudine')
+c.grid(True)
+
+
+plt.tight_layout()
+plt.show()
+
+print(f"Nr de esantioane pentru fiecare semnal: {len(x_n)}")
+
+
+#2
+#a
+
+f = 400  
+N = 1600  
+T = 1  
+t = np.linspace(0, T, N)
+
+x = np.sin(2 * np.pi * f * t)
+
+plt.figure(figsize=(10, 4))
+plt.plot(t, x)
+plt.xlabel('timp (s)')
+plt.ylabel('amplitudine')
+plt.grid()
+plt.show()
+
+#b
+
+f = 800
+T = 3 
+fs = 5000  
+t = np.linspace(0, T, int(fs*T))
+
+x = np.sin(2 * np.pi * f * t)
+
+plt.figure(figsize=(10, 4))
+plt.plot(t, x)
+plt.title('Semnal sinusoidal 800 Hz')
+plt.xlabel('timp (s)')
+plt.ylabel('amplitudine')
+plt.grid()
+plt.show()
+
+#c
+
+
+f3 = 240
+T3 = 2   
+fs3 = f3 * 10 
+t3 = np.linspace(0, T3, int(fs3 * T3), endpoint=False)
+
+
+sawtooth = 2 * np.mod(f3 * t3, 1) - 1
+
+plt.figure(figsize=(12, 4))
+plt.plot(t3, sawtooth, 'g-', linewidth=1.5)
+
+plt.xlabel('Timpul (s)')
+plt.ylabel('Amplitudine')
+plt.grid(True)
+plt.xlim(0, 0.1)  
+plt.show()
+
+print(f"Durata semnalului: {T3} ")
+print(f"Fr  esant: {fs3} Hz")
+
+#d
+
+f4 = 300 
+T4 = 2 
+fs4 = f4 * 10  
+t4 = np.linspace(0, T4, int(fs4 * T4), endpoint=False)
+
+
+square = np.sign(np.sin(2 * np.pi * f4 * t4))
+
+plt.figure(figsize=(12, 4))
+plt.plot(t4, square, 'purple', linewidth=2)
+plt.xlabel('Timpul (s)')
+plt.ylabel('Amplitudine')
+plt.grid(True)
+plt.xlim(0, 0.1) 
+plt.ylim(-1.5, 1.5)
+plt.show()
+
+print(f"Durata semnalului: {T4} s")
+print(f"Fr esantionare: {fs4} Hz")
+
+
+#e
+random_signal = np.random.rand(128, 128)
+
+plt.figure(figsize=(8, 8))
+plt.imshow(random_signal, cmap='viridis', interpolation='nearest')
+plt.title('Semnal 2D ')
+plt.colorbar(label='Valoare')
+plt.show()
+
+print(f"Dimensiunea semnalului: {random_signal.shape}")
+print(f"Valoare min: {random_signal.min():.3f}")
+print(f"Valoare max: {random_signal.max():.3f}")
+print(f"Valoarea medie: {random_signal.mean():.3f}")
+
+#f
+
+custom_signal = np.zeros((128, 128))
+center = 64
+y, x = np.ogrid[:128, :128]
+distances = np.sqrt((x - center)**2 + (y - center)**2)
+custom_signal = np.sin(distances / 5) * np.cos(distances / 8)
+gradient = np.linspace(0, 1, 128)
+custom_signal += np.outer(gradient, gradient) * 0.5
+
+plt.figure(figsize=(8, 8))
+plt.imshow(custom_signal, cmap='plasma', interpolation='nearest')
+plt.colorbar(label='Valoare')
+plt.show()
+
+print(f"Dimensiunea semnalului: {custom_signal.shape}")
+print(f"Valoare min: {custom_signal.min():.3f}")
+print(f"Valoare max: {custom_signal.max():.3f}")
+print(f"Valoare medie: {custom_signal.mean():.3f}")
+
+
+#3
+fs = 2000  
+bits_per_sample = 4  
+durata_ora = 1 
+
+print(f"Frecv esan: {fs} Hz")
+print(f"Biti: {bits_per_sample}")
+print()
+
+# a) 
+T_esantionare = 1 / fs
+print(f"a) Intervalul de timp :")
+print(f"   T = 1/fs = 1/{fs} = {T_esantionare} s = {T_esantionare * 1000} ms")
+print()
+
+# b) =
+print(f"b) Calculul spatiului stocare:")
+
+esantioane_per_ora = fs * 3600 
+print(f"   Esant intr-o ora: {fs} Hz × 3600 s = {esantioane_per_ora:,} esantioane")
+
+biti_totali = esantioane_per_ora * bits_per_sample
+print(f"   Biti totali: {esantioane_per_ora:,} × {bits_per_sample} = {biti_totali:,} biti")
+
+bytes_totali = biti_totali / 8
+print(f"   Bytes totali: {biti_totali:,} ÷ 8 = {bytes_totali:,} bytes")
+
+kb = bytes_totali / 1024
+mb = kb / 1024
+gb = mb / 1024
+
+print(f"   = {kb:.2f} KB")
+print(f"   = {mb:.2f} MB")
+print(f"   = {gb:.4f} GB")
