@@ -1,0 +1,99 @@
+Production: S -> (S)
+Production: S -> SS
+Production: S -> 
+Production: DONE
+
+Start symbol: S
+
+Strings to test:
+- (empty) -> YES
+- () -> YES
+- ()() -> YES
+- (()) -> YES
+- (()()) -> YES
+- (() -> NO
+- )( -> NO
+
+
+
+
+
+//2 Palindroame
+Production: S -> aSa
+Production: S -> bSb
+Production: S -> a
+Production: S -> b
+Production: S -> 
+Production: DONE
+
+Start symbol: S
+
+Strings to test:
+- (empty) -> YES
+- a -> YES
+- b -> YES
+- aa -> YES
+- aba -> YES
+- ababa -> YES
+- aabaa -> YES
+- abc -> NO
+
+
+//3  a^n b^n c^n (NOT context-free, va respinge)
+Production: S -> aSBc
+Production: S -> abc
+Production: cB -> Bc
+Production: bB -> bb
+Production: DONE
+
+Start symbol: S
+
+Strings to test:
+- abc -> YES
+- aabbcc -> depends (may not work correctly - CFG cannot handle this)
+
+
+
+//4 Expresii aritmetice simple
+Production: E -> E+T
+Production: E -> T
+Production: T -> T*F
+Production: T -> F
+Production: F -> (E)
+Production: F -> a
+Production: DONE
+
+Start symbol: E
+
+Strings to test:
+- a -> YES
+- a+a -> YES
+- a*a -> YES
+- a+a*a -> YES
+- (a) -> YES
+- (a+a)*a -> YES
+- a+ -> NO
+- +a -> NO
+
+
+//5 Șiruri cu număr egal de a și b
+Production: S -> aSbS
+Production: S -> bSaS
+Production: S -> 
+Production: DONE
+
+Start symbol: S
+
+Strings to test:
+- (empty) -> YES
+- ab -> YES
+- ba -> YES
+- aabb -> YES
+- abab -> YES
+- baba -> YES
+- aaabbb -> YES
+- aaa -> NO
+- abb -> NO
+
+
+

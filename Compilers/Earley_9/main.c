@@ -1,0 +1,399 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+
+#define MAX_PRODUCTIONS 50
+#define MAX_PROD_LENGTH 20
+#define MAX_NONTERMINALS 26
+#define MAX_CHART_SIZE 50
+#define MAX_ITEMS 500
+#define MAX_WORD_LENGTH 50
+
+// Production structure
+typedef struct {
+    char lhs;
+    char rhs[MAX_PROD_LENGTH];
+} Production;
+
+// Earley item
+typedef struct {
+    char lhs;
+    char rhs[MAX_PROD_LENGTH];
+    int dot_pos;
+    int start_pos;
+} EarleyItem;
+
+// Chart set structure
+typedef struct {
+    EarleyItem items[MAX_ITEMS];
+    int count;
+} ChartSet;
+
+// Grammar structure
+typedef struct {
+    Production productions[MAX_PRODUCTIONS];
+    int prod_count;
+    char start_symbol;
+    bool is_nonterminal[256];
+} Grammar;
+
+// Parser structure
+typedef struct {
+    Grammar grammar;
+    ChartSet chart[MAX_CHART_SIZE];
+    int chart_size;
+} EarleyParser;
+
+void init_grammar(Grammar* g) {
+    g->prod_count = 0;
+    g->start_symbol = 'S';
+    memset(g->is_nonterminal, 0, sizeof(g->is_nonterminal));
+}
+
+bool is_terminal(Grammar* g, char symbol) {
+    return symbol != '\0' && !g->is_nonterminal[(unsigned char)symbol];
+}
+
+bool is_complete(EarleyItem* item) {
+    return item->rhs[item->dot_pos] == '\0';
+}
+
+char next_symbol(EarleyItem* item) {
+    return item->rhs[item->dot_pos];
+}
+
+bool items_equal(EarleyItem* a, EarleyItem* b) {
+    return a->lhs == b->lhs &&
+           a->dot_pos == b->dot_pos &&
+           a->start_pos == b->start_pos &&
+           strcmp(a->rhs, b->rhs) == 0;
+}
+
+bool add_item(ChartSet* set, EarleyItem* item) {
+    if (set->count >= MAX_ITEMS) {
+        fprintf(stderr, "ERROR: Too many items (limit: %d)\n", MAX_ITEMS);
+        return false;
+    }
+
+    // Check for duplicates
+    for (int i = 0; i < set->count; i++) {
+        if (items_equal(&set->items[i], item)) {
+            return false;
+        }
+    }
+
+    set->items[set->count++] = *item;
+    return true;
+}
+
+// Predictor operation
+void predictor(EarleyParser* parser, int pos, char nonterminal) {
+    for (int i = 0; i < parser->grammar.prod_count; i++) {
+        if (parser->grammar.productions[i].lhs == nonterminal) {
+            EarleyItem new_item;
+            new_item.lhs = nonterminal;
+            strcpy(new_item.rhs, parser->grammar.productions[i].rhs);
+            new_item.dot_pos = 0;
+            new_item.start_pos = pos;
+            add_item(&parser->chart[pos], &new_item);
+        }
+    }
+}
+
+// Scanner operation
+void scanner(EarleyParser* parser, EarleyItem* item, const char* word, int pos) {
+    char next_sym = next_symbol(item);
+
+    if (next_sym != '\0' && is_terminal(&parser->grammar, next_sym)) {
+        if (pos < (int)strlen(word) && word[pos] == next_sym) {
+            EarleyItem new_item = *item;
+            new_item.dot_pos++;
+            add_item(&parser->chart[pos + 1], &new_item);
+        }
+    }
+}
+
+// Completer operation
+void completer(EarleyParser* parser, EarleyItem* completed, int pos) {
+    ChartSet* start_set = &parser->chart[completed->start_pos];
+
+    for (int i = 0; i < start_set->count; i++) {
+        EarleyItem* item = &start_set->items[i];
+        if (next_symbol(item) == completed->lhs) {
+            EarleyItem new_item = *item;
+            new_item.dot_pos++;
+            add_item(&parser->chart[pos], &new_item);
+        }
+    }
+}
+
+bool parse(EarleyParser* parser, const char* word) {
+    int word_len = strlen(word);
+    if (word_len >= MAX_CHART_SIZE - 1) {
+        printf("ERROR: String too long (max %d characters)\n", MAX_CHART_SIZE - 2);
+        return false;
+    }
+
+    parser->chart_size = word_len + 1;
+
+    // Initialize chart
+    for (int i = 0; i < parser->chart_size; i++) {
+        parser->chart[i].count = 0;
+    }
+
+    // Add initial items
+    for (int i = 0; i < parser->grammar.prod_count; i++) {
+        if (parser->grammar.productions[i].lhs == parser->grammar.start_symbol) {
+            EarleyItem initial;
+            initial.lhs = parser->grammar.start_symbol;
+            strcpy(initial.rhs, parser->grammar.productions[i].rhs);
+            initial.dot_pos = 0;
+            initial.start_pos = 0;
+            add_item(&parser->chart[0], &initial);
+        }
+    }
+
+    // Process each chart set
+    for (int i = 0; i < parser->chart_size; i++) {
+        int processed = 0;
+
+        while (processed < parser->chart[i].count) {
+            if (parser->chart[i].count > MAX_ITEMS - 10) {
+                printf("WARNING: Chart full at position %d\n", i);
+                break;
+            }
+
+            EarleyItem* item = &parser->chart[i].items[processed];
+
+            if (is_complete(item)) {
+                completer(parser, item, i);
+            } else {
+                char next_sym = next_symbol(item);
+                if (is_terminal(&parser->grammar, next_sym)) {
+                    scanner(parser, item, word, i);
+                } else {
+                    predictor(parser, i, next_sym);
+                }
+            }
+
+            processed++;
+        }
+    }
+
+    // Check acceptance
+    ChartSet* final_set = &parser->chart[word_len];
+    for (int i = 0; i < final_set->count; i++) {
+        EarleyItem* item = &final_set->items[i];
+        if (item->lhs == parser->grammar.start_symbol &&
+            is_complete(item) &&
+            item->start_pos == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void print_item(EarleyItem* item) {
+    printf("[%c -> ", item->lhs);
+
+    if (item->rhs[0] == '\0') {
+        printf("*lambda");
+    } else {
+        for (int i = 0; item->rhs[i] != '\0' || i == item->dot_pos; i++) {
+            if (i == item->dot_pos) {
+                printf("*");
+            }
+            if (item->rhs[i] != '\0') {
+                printf("%c", item->rhs[i]);
+            } else {
+                break;
+            }
+        }
+    }
+
+    printf(", %d]", item->start_pos);
+}
+
+void print_chart(EarleyParser* parser, const char* word) {
+    printf("Analysis for string: '%s'\n", strlen(word) == 0 ? "lambda (empty)" : word);
+
+    for (int i = 0; i < parser->chart_size; i++) {
+        if (i < (int)strlen(word)) {
+            printf("\nS(%d) - before '%c':\n", i, word[i]);
+        } else {
+            printf("\nS(%d) - final:\n", i);
+        }
+        printf("----------------------------------------------------------------------\n");
+
+        if (parser->chart[i].count == 0) {
+            printf("  (empty)\n");
+        } else {
+            for (int j = 0; j < parser->chart[i].count; j++) {
+                printf("  %2d. ", j + 1);
+                print_item(&parser->chart[i].items[j]);
+                printf("\n");
+            }
+        }
+    }
+}
+
+void read_grammar(Grammar* grammar) {
+    char line[200];
+    init_grammar(grammar);
+
+    printf("\n=== Grammar Input ===\n");
+    printf("Format: A -> xyz\n");
+    printf("For lambda-productions: A -> lambda (or A -> )\n");
+    printf("Example:\n");
+    printf("  S -> aSb\n");
+    printf("  S -> lambda\n");
+    printf("Enter 'DONE' when finished\n\n");
+
+    while (1) {
+        printf("Production: ");
+        if (!fgets(line, sizeof(line), stdin)) break;
+
+        line[strcspn(line, "\n")] = 0;
+
+        if (strcmp(line, "DONE") == 0 || strcmp(line, "done") == 0) {
+            break;
+        }
+
+        char* arrow = strstr(line, "->");
+        if (!arrow) {
+            printf("Invalid format! Use: A -> xyz\n");
+            continue;
+        }
+
+        // Extract LHS
+        char lhs = '\0';
+        for (char* p = line; p < arrow; p++) {
+            if (*p != ' ' && *p != '\t') {
+                lhs = *p;
+                break;
+            }
+        }
+
+        if (lhs == '\0') {
+            printf("Missing left-hand side!\n");
+            continue;
+        }
+
+        // Mark as nonterminal
+        grammar->is_nonterminal[(unsigned char)lhs] = true;
+
+        // Extract RHS
+        char* rhs_start = arrow + 2;
+        while (*rhs_start == ' ' || *rhs_start == '\t') rhs_start++;
+
+        char rhs[MAX_PROD_LENGTH] = "";
+
+        if (strstr(rhs_start, "lambda") || strstr(rhs_start, "epsilon") ||
+            strlen(rhs_start) == 0) {
+            rhs[0] = '\0'; // lambda-production
+        } else {
+            int idx = 0;
+            for (int i = 0; rhs_start[i] != '\0' && idx < MAX_PROD_LENGTH - 1; i++) {
+                if (rhs_start[i] != ' ' && rhs_start[i] != '\t') {
+                    rhs[idx++] = rhs_start[i];
+                }
+            }
+            rhs[idx] = '\0';
+        }
+
+        if (grammar->prod_count >= MAX_PRODUCTIONS) {
+            printf("ERROR: Too many productions (max %d)\n", MAX_PRODUCTIONS);
+            break;
+        }
+
+        grammar->productions[grammar->prod_count].lhs = lhs;
+        strcpy(grammar->productions[grammar->prod_count].rhs, rhs);
+        grammar->prod_count++;
+    }
+}
+
+void print_grammar(Grammar* grammar) {
+    printf("Grammar entered:\n");
+    for (int i = 0; i < grammar->prod_count; i++) {
+        printf("%c -> ", grammar->productions[i].lhs);
+        if (grammar->productions[i].rhs[0] == '\0') {
+            printf("lambda");
+        } else {
+            printf("%s", grammar->productions[i].rhs);
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    EarleyParser parser;
+    char word[MAX_WORD_LENGTH];
+    char start[10];
+
+    printf("        EARLEY PARSER - SYNTACTIC ANALYSIS\n");
+
+    read_grammar(&parser.grammar);
+
+    if (parser.grammar.prod_count == 0) {
+        printf("\nNo productions entered!\n");
+        return 1;
+    }
+
+    print_grammar(&parser.grammar);
+
+    printf("\nEnter start symbol: ");
+    if (!fgets(start, sizeof(start), stdin)) return 1;
+    start[strcspn(start, "\n")] = 0;
+
+    // Extract start symbol (skip spaces)
+    parser.grammar.start_symbol = '\0';
+    for (int i = 0; start[i] != '\0'; i++) {
+        if (start[i] != ' ' && start[i] != '\t') {
+            parser.grammar.start_symbol = start[i];
+            break;
+        }
+    }
+
+    printf("Enter strings to verify\n");
+    printf("For empty string, leave line blank\n");
+    printf("Enter 'DONE' to finish\n");
+
+    typedef struct {
+        char word[MAX_WORD_LENGTH];
+        char result[10];
+    } Result;
+
+    Result results[50];
+    int result_count = 0;
+
+    while (1) {
+        printf("String: ");
+        if (!fgets(word, sizeof(word), stdin)) break;
+        word[strcspn(word, "\n")] = 0;
+
+        if (strcmp(word, "DONE") == 0 || strcmp(word, "done") == 0) {
+            break;
+        }
+
+        bool accepted = parse(&parser, word);
+        print_chart(&parser, word);
+
+        const char* result = accepted ? "YES" : "NO";
+        printf("RESULT: %s\n", result);
+
+        if (result_count < 50) {
+            strcpy(results[result_count].word, strlen(word) == 0 ? "lambda" : word);
+            strcpy(results[result_count].result, result);
+            result_count++;
+        }
+    }
+
+    if (result_count > 0) {
+        printf("        SUMMARY OF RESULTS\n");
+        for (int i = 0; i < result_count; i++) {
+            printf("%-20s -> %s\n", results[i].word, results[i].result);
+        }
+    }
+
+    return 0;
+}
